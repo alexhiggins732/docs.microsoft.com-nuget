@@ -86,25 +86,30 @@ _From the Visual Studio Options Dialog_
 ```xml
 <!-- Define the package sources, nuget.org and contoso.com. -->
 <!-- `clear` ensures no additional sources are inherited from another config file. -->
-<packageSources>
-  <clear />
-  <!-- `key` can be any identifier for your source. -->
-  <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
-  <add key="contoso.com" value="https://contoso.com/packages/" />
-</packageSources>
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+	<!-- Define the package sources, nuget.org and contoso.com. -->
+	<!-- `clear` ensures no additional sources are inherited from another config file. -->
+	<packageSources>
+		<clear />
+		<!-- `key` can be any identifier for your source. -->
+		<add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+		<add key="contoso.com" value="https://pkgs.dev.azure.com/contosoe/_packaging/prodnuget/nuget/v3/index.json" />
+	</packageSources>
+	<!-- Define mappings by adding package patterns beneath the target source. -->
+	<!-- Contoso.* packages and NuGet.Common will be restored from contoso.com, everything else from nuget.org. -->
 
-<!-- Define mappings by adding package patterns beneath the target source. -->
-<!-- Contoso.* packages and NuGet.Common will be restored from contoso.com, everything else from nuget.org. -->
-<packageSourceMapping>
-  <!-- key value for <packageSource> should match key values from <packageSources> element -->
-  <packageSource key="nuget.org">
-    <package pattern="*" />
-  </packageSource>
-  <packageSource key="contoso.com">
-    <package pattern="Contoso.*" />
-    <package pattern="NuGet.Common" />
-  </packageSource>
-</packageSourceMapping>
+	<packageSourceMapping>
+		<!-- key value for <packageSource> should match key values from <packageSources> element -->
+		<packageSource key="nuget.org">
+			<package pattern="*" />
+		</packageSource>
+		<packageSource key="contoso.com">
+			<package pattern="Contoso.*" />
+      <package pattern="Nuget.ContosoPackage" />
+		</packageSource>
+	</packageSourceMapping>
+</configuration>
 ```
 
 Package Source Mapping settings are applied following [nuget.config precedence rules](configuring-nuget-behavior.md#how-settings-are-applied) when multiple `nuget.config` files at various levels (machine-level, user-level, repo-level) are present.
